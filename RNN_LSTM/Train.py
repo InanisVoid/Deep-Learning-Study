@@ -3,7 +3,7 @@ import torch.nn as nn
 from LSTM import lstm 
 from DataSet import getData
 from torch.autograd import Variable
-
+from torch.utils.tensorboard import SummaryWriter
 import numpy as np 
 import matplotlib.pyplot as plt 
 
@@ -16,6 +16,7 @@ class lstmTrain():
         self.criterion=f
         self.rate=rate
         self.optimizer=torch.optim.Adam(self.model.parameters(),lr=self.rate)
+        self.writer=SummaryWriter('./log')
     def train(self,epochs):
         for i in range(epochs): 
             total_loss=0
@@ -29,6 +30,7 @@ class lstmTrain():
                 loss.backward()
                 self.optimizer.step()
                 total_loss += loss.item()
+            self.writer.add_scalar('Train/Loss',loss.item(),i)
             print(i,total_loss)
         torch.save(self.model,"Model.pkl")
 
@@ -55,10 +57,16 @@ class lstmTrain():
         f=lambda x: x*(float(self.maxData) - float(self.minData)) + float(self.minData)
         self.prediction=list(map(f,self.prediction))
         self.truth=list(map(f,self.truth))
+        
+        for x,p,t in zip(xlabel,self.prediction,self.truth):
+            self.writer.add_scalars('Test1',{"Prediction":p,"True Data":t},x)
 
         plt.plot(xlabel,self.prediction,label="Prediction") 
         plt.plot(xlabel,self.truth,label="True Data")
         plt.show()
+
+    # def loss_plot():
+        
 
 
 
@@ -67,7 +75,7 @@ def main():
     rate=0.0001
     device=torch.device("cuda:0")
     Test=lstmTrain("ChinaBank.csv",device,rate)
-    # Test.train(50)
+    # Test.train(100)
     Test.load("Model.pkl")
     Test.predict()
     Test.predict_plot()

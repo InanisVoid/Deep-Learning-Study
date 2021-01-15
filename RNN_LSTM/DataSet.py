@@ -41,7 +41,7 @@ class getData():
         testX,testY=X[int(0.9*total_len):],Y[int(0.9*total_len):]
 
         train_loader = DataLoader(dataset=Mydataset(trainX, trainY), batch_size=self.batchSize, shuffle=True)
-        test_loader = DataLoader(dataset=Mydataset(testX, testY), batch_size=self.batchSize, shuffle=True)
+        test_loader = DataLoader(dataset=Mydataset(testX, testY), batch_size=self.batchSize, shuffle=False)
 
         # for i,data in enumerate(train_loader):
         #     print(i)
