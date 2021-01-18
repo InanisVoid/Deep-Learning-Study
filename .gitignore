@@ -1,3 +1,4 @@
 /CNN/data/*
 /Regression/logs
 /RNN_CNN/log
+/Time Sequence/Purchase Redemption Data/*
